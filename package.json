@@ -1,0 +1,8 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/NamanAg0502/go-todo-server.git",
+  "author": "“NamanAg0502” <naman.agrawal.na05@gmail.com>",
+  "license": "MIT"
+}
