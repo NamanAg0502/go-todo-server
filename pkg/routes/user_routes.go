@@ -8,8 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func userRoutes(c *mongo.Collection) *chi.Mux {
-	r := chi.NewRouter()
+func userRoutes(r chi.Router, c *mongo.Collection) {
 	s := services.NewUserService(c)
 	h := handlers.NewUserHandler(s)
 
@@ -18,5 +17,4 @@ func userRoutes(c *mongo.Collection) *chi.Mux {
 	r.Get("/{id}", h.GetUserByID)
 	r.Put("/{id}", h.UpdateUser)
 	r.Delete("/{id}", h.DeleteUser)
-	return r
 }

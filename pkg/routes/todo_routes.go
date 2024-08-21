@@ -8,8 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func todoRoutes(c *mongo.Collection) *chi.Mux {
-	r := chi.NewRouter()
+func todoRoutes(r chi.Router, c *mongo.Collection) {
 	s := services.NewTodoService(c)
 	h := handlers.NewTodoHandler(s)
 
@@ -20,5 +19,4 @@ func todoRoutes(c *mongo.Collection) *chi.Mux {
 	r.Put("/{id}", h.UpdateTodoByID)
 	r.Delete("/{id}", h.DeleteTodoByID)
 
-	return r
 }

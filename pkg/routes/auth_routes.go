@@ -7,13 +7,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func authRoutes(c *mongo.Collection) *chi.Mux {
-	r := chi.NewRouter()
-
+func authRoutes(r chi.Router, c *mongo.Collection) {
 	s := services.NewAuthService(c)
 	h := handlers.NewAuthHandler(s)
 	r.Post("/login", h.Login)
 	r.Post("/register", h.Register)
-
-	return r
 }
