@@ -17,14 +17,6 @@ func NewTodoHandler(repo models.TodoRepository) *TodoHandler {
 	return &TodoHandler{repo: repo}
 }
 
-func GetID(w http.ResponseWriter, r *http.Request) string {
-	userID, ok := r.Context().Value(models.UserContextKey).(string)
-	if !ok {
-		utils.WriteError(w, nil, "Unauthorized", http.StatusUnauthorized)
-	}
-	return userID
-}
-
 func (h *TodoHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) {
 	todos, err := h.repo.Find(r.Context())
 	if err != nil {

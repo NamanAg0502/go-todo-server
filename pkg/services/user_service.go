@@ -102,8 +102,7 @@ func (s *UserService) FindMe(ctx context.Context) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	id, _ := primitive.ObjectIDFromHex(userID)
-	filter := bson.M{"_id": id}
+	filter := bson.M{"_id": userID}
 	var user models.User
 	err = s.c.FindOne(ctx, filter).Decode(&user)
 	if err == mongo.ErrNoDocuments {

@@ -19,15 +19,19 @@ func NewTodoService(c *mongo.Collection) *TodoService {
 	return &TodoService{c: c}
 }
 
-func GetUserID(ctx context.Context) (string, error) {
+func GetUserID(ctx context.Context) (primitive.ObjectID, error) {
 	userID, ok := ctx.Value(models.UserContextKey).(string)
 	if !ok {
-		return "", fmt.Errorf("user ID not found")
+		return primitive.NilObjectID, fmt.Errorf("user ID not found")
 	}
-	return userID, nil
+	objID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return objID, nil
 }
 
-func (s *TodoService) Find(ctx context.Context) ([]models.Todo, error) {
+func (s *TodoService) Find(ctx context.Context) (*[]models.Todo, error) {
 	objID, err := GetUserID(ctx)
 	if err != nil {
 		return nil, err
@@ -45,7 +49,7 @@ func (s *TodoService) Find(ctx context.Context) ([]models.Todo, error) {
 		}
 		todos = append(todos, todo)
 	}
-	return todos, nil
+	return &todos, nil
 }
 
 func (s *TodoService) CreateOne(ctx context.Context, req models.TodoRequest) (*models.Todo, error) {

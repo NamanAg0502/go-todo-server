@@ -1,6 +1,7 @@
 'use client';
 
 import { AuthProvider } from '@/context/AuthContext';
+import { TodoProvider } from '@/context/TodoContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function RootProvider({
@@ -12,7 +13,9 @@ export default function RootProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <TodoProvider>{children}</TodoProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

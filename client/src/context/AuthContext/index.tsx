@@ -39,8 +39,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, [isAuthenticated]);
 
-  console.log(user);
-
   const signIn = useCallback(
     async (email: string, password: string): Promise<void> => {
       try {
