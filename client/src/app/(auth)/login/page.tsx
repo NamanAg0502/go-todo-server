@@ -14,10 +14,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import api from '@/lib/api';
 import { toast } from 'sonner';
 import { redirect, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 const formSchema = z.object({
   email: z.string().email('invalid email').min(1, 'email required'),
@@ -26,6 +25,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
+  const { signIn, isAuthenticated } = useAuth();
   const {
     register,
     handleSubmit,
@@ -39,30 +39,13 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    login(data);
+    await signIn(data.email, data.password);
+    if (!isAuthenticated) {
+      toast.error('Invalid email or password');
+      redirect('/login');
+    }
+    redirect('/');
   };
-
-  const {
-    mutate: login,
-    isPending,
-    isError,
-    error,
-  } = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) => {
-      const response = await api.post('/auth/login', data);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      if (data.success) {
-        localStorage.setItem('access_token', data.data);
-        toast.success(data.message);
-        router.replace('/');
-      }
-    },
-    onError: (error) => {
-      console.error('Error logging in', error);
-    },
-  });
 
   return (
     <Card className="w-full max-w-sm">
@@ -96,14 +79,11 @@ export default function LoginPage() {
               <p className="text-xs text-red-500">{errors.password.message}</p>
             )}
           </div>
-          <Button type="submit" className="w-full" disabled={isPending}>
+          <Button type="submit" className="w-full">
             Login
           </Button>
         </form>
       </CardContent>
-      <CardFooter>
-        {isError && <p className="text-xs text-red-500">{error?.message}</p>}
-      </CardFooter>
     </Card>
   );
 }

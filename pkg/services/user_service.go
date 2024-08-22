@@ -18,7 +18,7 @@ func NewUserService(c *mongo.Collection) *UserService {
 	return &UserService{c: c}
 }
 
-func (s *UserService) Find(ctx context.Context) ([]models.User, error) {
+func (s *UserService) Find(ctx context.Context) (*[]models.User, error) {
 	var users []models.User
 	cur, err := s.c.Find(ctx, bson.D{})
 	if err != nil {
@@ -34,7 +34,7 @@ func (s *UserService) Find(ctx context.Context) ([]models.User, error) {
 		}
 		users = append(users, user)
 	}
-	return users, nil
+	return &users, nil
 }
 
 func (s *UserService) FindOne(ctx context.Context, id string) (*models.User, error) {
@@ -95,4 +95,21 @@ func (s *UserService) DeleteOne(ctx context.Context, id string) (int64, error) {
 		return 0, err
 	}
 	return result.DeletedCount, nil
+}
+
+func (s *UserService) FindMe(ctx context.Context) (*models.User, error) {
+	userID, err := GetUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	id, _ := primitive.ObjectIDFromHex(userID)
+	filter := bson.M{"_id": id}
+	var user models.User
+	err = s.c.FindOne(ctx, filter).Decode(&user)
+	if err == mongo.ErrNoDocuments {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

@@ -17,4 +17,5 @@ func userRoutes(r chi.Router, c *mongo.Collection) {
 	r.Get("/{id}", h.GetUserByID)
 	r.Put("/{id}", h.UpdateUser)
 	r.Delete("/{id}", h.DeleteUser)
+	r.Get("/me", h.GetMe)
 }

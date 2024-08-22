@@ -23,8 +23,9 @@ type UserRequest struct {
 }
 
 type UserRepository interface {
-	Find(ctx context.Context) ([]User, error)
+	Find(ctx context.Context) (*[]User, error)
 	FindOne(ctx context.Context, id string) (*User, error)
 	UpdateOne(ctx context.Context, id string, req UserRequest) (int64, error)
 	DeleteOne(ctx context.Context, id string) (int64, error)
+	FindMe(ctx context.Context) (*User, error)
 }
